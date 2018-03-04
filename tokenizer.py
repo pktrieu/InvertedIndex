@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup
 from nltk.stem.porter import *
 from pathlib import Path
 from collections import defaultdict
+from inverted_index import inverted_index
+from posting import Posting
 import string
 
 
@@ -25,22 +27,33 @@ def token_stem(t, stemmer):
     return [stemmer.stem(word) for word in t]
 
 
-def parse_page(relative_path):
-    page = file_open(relative_path)
+def parse_page(rel_path, index):
+    page = file_open(rel_path)
     '''Returns tuple where tuple[0] = title of page and tuple [1] is dictionary of parsed word and count'''
-    result = defaultdict(int)
-    content = page_content(page)
+    # result = defaultdict(int)
+    content = page_content(open(page, encoding="utf8"))
     line_list = []
-    for line in content[1].split("\n"):
+    for line in content.split("\n"):
         line_list.extend(re.findall('[0-9a-zA-Z]+', line))
     tokens = [x for x in line_list if not x in stopwords]
     processed = token_stem(tokens, PorterStemmer())
+
     for word in processed:
-        result[word]+=1
-    return (content[0], result)
+        # have loop ignore
+        index[word][rel_path] += 1
+
+    #for word,posts in index:
+    #    print( word + " : " + index[word] )
+    # for word in processed:
+    #     inverted_index[word]
+    #     for post in inverted_index[word]:
+    #         if post.docID in inverted_index [word]:
+    #             post.freq += 1
+    #         inverted[]
+
 
 def page_content(page):
     soup = BeautifulSoup(page, "lxml")
     [s.extract() for s in soup('script')]
     [x.extract() for x in soup("style")]
-    return (soup.title.string, soup.get_text().lower())
+    return soup.get_text().lower()

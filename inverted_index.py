@@ -13,7 +13,7 @@ import tokenizer
 
 doc_counter = 0
 file_path = "C:\\Users\C_los\PycharmProjects\WEBPAGES_RAW\\"
-inverted_index = defaultdict(lambda: defaultdict(int))
+inverted_index = defaultdict(list)
 postingsList = list()
 
 def create_index():
@@ -25,19 +25,19 @@ def create_index():
     invalid = 0
     for site in json_object:
         # print(site)
-        # if counter == 10:
-        #     break
+        if counter == 10:
+            break
         if json_object[site].endswith(".java") or json_object[site].endswith(".txt") or len(json_object[site]) > 100:
             continue
-        tokenizer.parse_page(site,inverted_index)
-        # counter += 1
+        tokenizer.parse_page(site, inverted_index)
+        counter += 1
         doc_counter += 1
         # print(str(counter))
         # print(inverted_index.items())
     for token, posts in inverted_index.items():
         print("----> TOKEN: " + token + "\n")
-        for d, f in posts.items():
-            print("############## docID: " + d + " frequency: " + str(f) + "\n")
+        for post in posts:
+            print("############## docID: " + post.docID + " frequency: " + str(post.freq) + "\n")
         # posting_obj = posting.Posting(json_object[site], tokenizer.page_content(json_object)[1])
         # for k,v in posting_obj.frequency:
         #     print(k + ": " + v + "\n")
@@ -45,17 +45,17 @@ def create_index():
         # print("rel path: " + site + " -- url: " + json_object[site] + "\n")
     bookkeeping_file.close()
 
+
 def json_to_file(index):
     outfile = open("inverted_index.txt", "w")
     outfile.write("Total number of docs: " + str(doc_counter))
     outfile.write("\nNumber of Unique Words" + str() + "\n")
-    sorted_index = sorted(inverted_index, key = )
+    # sorted_index = sorted(inverted_index, key = )
     json.dump(inverted_index, outfile, sort_keys=True, indent=4)
-    json.dump
 
 
 if __name__ == '__main__':
     create_index()
-    json_to_file(inverted_index)
+    # json_to_file(inverted_index)
     print(" Unique Tokens: " + str(len(inverted_index.keys())))
     print(" Documents counted: " + str(doc_counter))

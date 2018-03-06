@@ -4,10 +4,10 @@ import nltk
 from bs4 import BeautifulSoup
 from nltk.stem.porter import *
 from pathlib import Path
-from collections import defaultdict
-from inverted_index import inverted_index
+# from collections import defaultdict
+# from inverted_index import inverted_index
 from posting import Posting
-import string
+# import string
 
 
 stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him',
@@ -19,9 +19,11 @@ stopwords = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you',
 'aren', "aren't", 'couldn', "couldn't", 'didn', "didn't", 'doesn', "doesn't", 'hadn', "hadn't", 'hasn', "hasn't", 'haven', "haven't", 'isn', "isn't", 'ma', 'mightn', "mightn't", 'mustn', "mustn't", 'needn', "needn't", 'shan', "shan't",
 'shouldn', "shouldn't", 'wasn', "wasn't", 'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't"]
 
+
 def file_open(rel):
     location = Path("C:\\Users\C_los\PycharmProjects\WEBPAGES_RAW\\")
     return location / rel
+
 
 def token_stem(t, stemmer):
     return [stemmer.stem(word) for word in t]
@@ -40,7 +42,15 @@ def parse_page(rel_path, index):
 
     for word in processed:
         # have loop ignore
-        index[word][rel_path] += 1
+        if len(index[word]) > 0:
+            for post in index[word]:
+                if post.docID == rel_path:
+                    post.freq += 1
+                    break
+        else:
+            post = Posting(rel_path)
+            post.freq += 1
+            index[word].append(post)
 
     #for word,posts in index:
     #    print( word + " : " + index[word] )

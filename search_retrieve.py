@@ -2,7 +2,6 @@
 from nltk.stem.porter import *
 import json
 
-
 file_path = "C:\\Users\C_los\PycharmProjects\WEBPAGES_RAW\\"
 
 def query_input():
